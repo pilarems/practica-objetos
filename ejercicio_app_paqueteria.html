@@ -87,7 +87,7 @@
         <section class="row">
             <div class="paquetes">
                 <h2>Registro de paquetes</h2>
-                <div class="registro_paquetes">
+                <div class="registro_paquetes" id="registro_paquetes">
 
                 </div>
             </div>
@@ -98,93 +98,70 @@
         crossorigin="anonymous"></script>
         <script>
             //Repartidores
-            let nombre = document.getElementById('in_nombre')
-            let vehiculo = document.getElementById('in_vehiculo')
-            let tlf = document.getElementById('in_tlf')
-            let zona = document.getElementById('in_zona')
-            let btn_repartidor = document.('btn_anyadir_repartidor')
+            const nombre = document.getElementById('in_nombre')
+            const vehiculo = document.getElementById('in_vehiculo')
+            const tlf = document.getElementById('in_tlf')
+            const zona = document.getElementById('in_zona')
+            const btn_repartidor = document.getElementById('btn_anyadir_repartidor')
             const repartidores = []
             //Paquetes
-            let altura = document.getElementById('in_altura')
-            let ancho = document.getElementById('in_ancho')
-            let largo = document.getElementById('in_largo')
-            let destino = document.getElementById('in_destino')
-            let repartidor = document.getElementById('in_repartidor')
-            let tamanyo = document.getElementById('in_tamanyo')
-            let btn_paquete = document.getElementById('btn_anyadir_paquete')
-            let registro_paquetes = document.getElementById('registro_paquetes')
-            const paquetes = {}
+            const altura = document.getElementById('in_altura')
+            const ancho = document.getElementById('in_ancho')
+            const largo = document.getElementById('in_largo')
+            const destino = document.getElementById('in_destino')
+            const select_repartidor = document.getElementById('in_repartidor')
+            const tamanyo = document.getElementById('in_tamanyo')
+            const btn_paquete = document.getElementById('btn_anyadir_paquete')
+            const registro_paquetes = document.getElementById('registro_paquetes')
+            const reparto = {
+                paquetes: []
+            }
 
             //Objetos
             function Repartidor(nombre,vehiculo,tlf,zona) {
-            this.nombre = nombre
-            this.vehiculo = vehiculo
-            this.tlf = tlf
-            this.zona = zona
+            this.nombre = nombre;
+            this.vehiculo = vehiculo;
+            this.tlf = tlf;
+            this.zona = zona;
 
         }
         function Caja(altura,ancho,largo,tamanyo,destino,repartidor) {
-            this.altura = altura
-            this.ancho = ancho
-            this.largo = largo
-            this.tamanyo = tamanyo
-            this.destino = destino
-            this.repartidor = repartidor
+            this.altura = parseFloat(altura);
+            this.ancho = parseFloat(ancho);
+            this.largo = parseFloat(largo);
+            this.tamanyo = tamanyo;
+            this.destino = destino;
+            this.repartidor = repartidor;
             this.superficie = function (){
                 return this.ancho * this.largo
             }
             this.volumen = function (alto){
-                return this.superficie() * alto
+                return this.superficie() * this.alto
             }
         }
 
-        function validaInputRepartidor() {
-            let nombre_valid = nombre.value.trim()
-            let tlf_valid = tlf.value.trim()
-            let vehiculo_valid = vehiculo.value.trim()
-            let zona_valid = zona.value.trim()
-            if(nombre_valid === '' || nombre_valid.length < 3){
-                alert('Debes introducir un nombre')
-                return false
-            }
-             if (tlf_valid === ''  || tlf_valid.length < 9){
-                alert('Introduce un número de teléfono válido')
-                return false
-             }
-             if (vehiculo_valid === '' || vehiculo_valid.length < 7){
-                alert('introduce una matrícula válida')
-                return false
-             }
-             if (zona_valid === 'Zona') {
-                alert('Selecciona tu zona, por favor')
-                return false
-             }
-             return true
-        }
-
-        function vaciaInputRepartidor() {
-            nombre.value = ''
-            nombre.focus()
-            tlf.value = ''
-            vehiculo.value = ''
-            zona.value = 'Zona'
-        }
-
-        function validaCaja() {
-            let altura_valid = altura.value
-            let ancho_valid = ancho.value
-            let largo_valid = largo.value
-            let destino_valid = destino.value.trim()
-            let tamanyo_valid = tamanyo.value
-            let repartidor_valid = repartidor.value 
-
-            if (altura === ''|| altura <= 0) {
-                alert('Introduzca el dato correcto')
-                return false
+        function creaRepartidor() {
+            if(nombre.value === '' || tlf.value === '' || tlf.value.length < 9 || vehiculo.value === '' || vehiculo.value.length < 6 || zona.value === 'Zona') {
+                alert('Faltan datos por completar o algunos son erroneos');
+                return;
             }
             
-        }
- 
+            const nuevoRepartidor = new Repartidor(
+                nombre.value,
+                vehiculo.value,
+                tlf.value,
+                zona.value
+            );
+              repartidores.push(nuevoRepartidor);
+              
+              nombre.value = '';
+              tlf.value = '';
+              vehiculo.value = '';
+              zona.value = 'Zona';
+            } 
+            
+        
+         
         </script>
 </body>
 
