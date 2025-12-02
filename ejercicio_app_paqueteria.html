@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta author="P.E.">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <title>Paquetería Pepi</title>
+</head>
+
+<body>
+    <div class="container">
+        <section class="row">
+            <div class="col-6">
+                <div class="accordion" id="accordion_paquete">
+                    <div class="accordion-item">
+                        <h1 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                + Nuevo paquete
+                            </button>
+                        </h1>
+                        <div id="collapseOne" class="accordion-collapse collapse"
+                            data-bs-parent="#accordion">
+                            <div class="accordion-body">
+                                <form class="p-2 rounded" id="form_paquete">
+                                    <div class="form-floating mb-3">
+                                        <div class="medidas mb-2" style="display: flex;">
+                                        <input type="number" id="in_altura" class="form-control" placeholder="altura">
+                                        <input type="number" id="in_largo" class="form-control" placeholder="largo">
+                                        <input type="number" id="in_ancho" class="form-control" placeholder="ancho">
+                                        </div>
+                                        <input type="text" id="in_destino" class="form-control mb-2">
+                                        <select class="form-select mb-2" id="in_tamanyo" aria-label="Default select example">
+                                            <option selected>Tamaño</option>
+                                            <option value="1">S</option>
+                                            <option value="2">M</option>
+                                            <option value="3">L</option>
+                                        </select>
+                                        <select class="form-select" id="in_repartidor" aria-label="Default select example">
+                                            <option selected>Repartidor</option>
+                                        </select>
+                                        <button type="button" class="btn" id="btn_anyadir_paquete">Añadir paquete</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="accordion" id="accordion_repartidor">
+                    <div class="accordion-item">
+                        <h1 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                + Nuevo Repatidor
+                            </button>
+                        </h1>
+                        <div id="collapseTwo" class="accordion-collapse collapse"
+                            data-bs-parent="#accordion">
+                            <div class="accordion-body">
+                                <form class="p-2 rounded" id="form_repartidor">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" id="in_nombre" class="form-control mb-2" placeholder="Nombre">
+                                        <input type="number" id="in_tlf" class="form-control mb-2" placeholder="Teléfono">
+                                        <input type="text" id="in_vehiculo" class="form-control mb-2" placeholder="Matrícula">
+                                        <select class="form-select mb-2" id="in_zona" aria-label="Default select example">
+                                            <option selected>Zona</option>
+                                            <option value="1">Nacional</option>
+                                            <option value="2">Internacional</option>
+                                        </select>
+                                        <div class="num_paquetes_adj">
+
+                                        </div>
+                                        <button type="button" class="btn" id="btn_anyadir_repartidor">Añadir repartidor</button>
+                                    </div>
+                                </form>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="row">
+            <div class="paquetes">
+                <h2>Registro de paquetes</h2>
+                <div class="registro_paquetes">
+
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+        crossorigin="anonymous"></script>
+        <script>
+            //Repartidores
+            let nombre = document.getElementById('in_nombre')
+            let vehiculo = document.getElementById('in_vehiculo')
+            let tlf = document.getElementById('in_tlf')
+            let zona = document.getElementById('in_zona')
+            let btn_repartidor = document.('btn_anyadir_repartidor')
+            const repartidores = []
+            //Paquetes
+            let altura = document.getElementById('in_altura')
+            let ancho = document.getElementById('in_ancho')
+            let largo = document.getElementById('in_largo')
+            let destino = document.getElementById('in_destino')
+            let repartidor = document.getElementById('in_repartidor')
+            let tamanyo = document.getElementById('in_tamanyo')
+            let btn_paquete = document.getElementById('btn_anyadir_paquete')
+            let registro_paquetes = document.getElementById('registro_paquetes')
+            const paquetes = {}
+
+            //Objetos
+            function Repartidor(nombre,vehiculo,tlf,zona) {
+            this.nombre = nombre
+            this.vehiculo = vehiculo
+            this.tlf = tlf
+            this.zona = zona
+
+        }
+        function Caja(altura,ancho,largo,tamanyo,destino,repartidor) {
+            this.altura = altura
+            this.ancho = ancho
+            this.largo = largo
+            this.tamanyo = tamanyo
+            this.destino = destino
+            this.repartidor = repartidor
+            this.superficie = function (){
+                return this.ancho * this.largo
+            }
+            this.volumen = function (alto){
+                return this.superficie() * alto
+            }
+        }
+
+        function validaInputRepartidor() {
+            let nombre_valid = nombre.value.trim()
+            let tlf_valid = tlf.value.trim()
+            let vehiculo_valid = vehiculo.value.trim()
+            let zona_valid = zona.value.trim()
+            if(nombre_valid === '' || nombre_valid.length < 3){
+                alert('Debes introducir un nombre')
+                return false
+            }
+             if (tlf_valid === ''  || tlf_valid.length < 9){
+                alert('Introduce un número de teléfono válido')
+                return false
+             }
+             if (vehiculo_valid === '' || vehiculo_valid.length < 7){
+                alert('introduce una matrícula válida')
+                return false
+             }
+             if (zona_valid === 'Zona') {
+                alert('Selecciona tu zona, por favor')
+                return false
+             }
+             return true
+        }
+
+        function vaciaInputRepartidor() {
+            nombre.value = ''
+            nombre.focus()
+            tlf.value = ''
+            vehiculo.value = ''
+            zona.value = 'Zona'
+        }
+
+        function validaCaja() {
+            let altura_valid = altura.value
+            let ancho_valid = ancho.value
+            let largo_valid = largo.value
+            let destino_valid = destino.value.trim()
+            let tamanyo_valid = tamanyo.value
+            let repartidor_valid = repartidor.value 
+
+            if (altura === ''|| altura <= 0) {
+                alert('Introduzca el dato correcto')
+                return false
+            }
+            
+        }
+ 
+        </script>
+</body>
+
+</html>
