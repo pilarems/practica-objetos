@@ -42,6 +42,7 @@
                                         </select>
                                         <select class="form-select" id="in_repartidor" aria-label="Default select example">
                                             <option selected>Repartidor</option>
+                                            
                                         </select>
                                         <button type="button" class="btn" id="btn_anyadir_paquete">Añadir paquete</button>
                                     </div>
@@ -70,8 +71,8 @@
                                         <input type="text" id="in_vehiculo" class="form-control mb-2" placeholder="Matrícula">
                                         <select class="form-select mb-2" id="in_zona" aria-label="Default select example">
                                             <option selected>Zona</option>
-                                            <option value="1">Nacional</option>
-                                            <option value="2">Internacional</option>
+                                            <option value="Nacional">Nacional</option>
+                                            <option value="Internacional">Internacional</option>
                                         </select>
                                         <div class="num_paquetes_adj">
 
@@ -136,7 +137,7 @@
                 return this.ancho * this.largo
             }
             this.volumen = function (alto){
-                return this.superficie() * this.alto
+                return this.superficie() * this.altura;
             }
         }
 
@@ -158,7 +159,19 @@
               tlf.value = '';
               vehiculo.value = '';
               zona.value = 'Zona';
+              actualizaSelect();
             } 
+
+            function actualizaSelect () {
+                select_repartidor.innerHTML = '<option value = "">Repartidor</option>'
+
+                repartidores.forEach(function (repartidor, indice){
+                    const option = document.createElement('option');
+                    option.value = indice;
+                    option.textContent = `${repartidor.nombre}`;
+                    select_repartidor.appendChild(option);
+                })
+            }
             
         
          
