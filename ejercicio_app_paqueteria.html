@@ -15,6 +15,11 @@
             border-radius: 10px;
             border-color: blue;
             color: blue;
+        }
+
+        .paquetes {
+            text-align: center;
+            margin-top: 8px;
 
         }
     </style>
@@ -101,15 +106,13 @@
                                         <label for="in_vehiculo">Matrícula</label>
                                     </div>
                                     <div class="form-floating mb-3">
-                                    <select class="form-select mb-2" id="in_zona" aria-label="Default select example">
-                                        <option selected>Zona</option>
-                                        <option value="Nacional">Nacional</option>
-                                        <option value="Internacional">Internacional</option>
-                                    </select>
-                                    <label for="in_zona">Zona</label>
-                                    </div>
-                                    <div class="num_paquetes_adj">
-
+                                        <select class="form-select mb-2" id="in_zona"
+                                            aria-label="Default select example">
+                                            <option selected>Zona</option>
+                                            <option value="Nacional">Nacional</option>
+                                            <option value="Internacional">Internacional</option>
+                                        </select>
+                                        <label for="in_zona">Zona</label>
                                     </div>
                                     <button type="button" class="btn" id="btn_anyadir_repartidor">Añadir
                                         repartidor</button>
@@ -122,8 +125,28 @@
         </section>
         <section class="row">
             <div class="paquetes">
-                <h2>Registro de paquetes</h2>
+                <h2>Registro de envíos</h2>
                 <div class="registro_paquetes" id="registro_paquetes">
+                    <div class="table">
+                        <table class="table table-hover table-bodered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Destino</th>
+                                    <th>Tamaño</th>
+                                    <th>Superficie</th>
+                                    <th>Volumen</th>
+                                    <th>Tipo de Envío</th>
+                                    <th>Repartidor</th>
+                                    <th>Vehículo</th>
+                                    <th>Contacto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpo_tabla">
+                            
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
             </div>
@@ -132,6 +155,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
         crossorigin="anonymous"></script>
+        <script src="/Prácticas/practica-objetos/biblioteca.js"></script>
     <script>
         //Repartidores
         const nombre = document.getElementById('in_nombre')
@@ -146,7 +170,6 @@
         const largo = document.getElementById('in_largo')
         const destino = document.getElementById('in_destino')
         const select_repartidor = document.getElementById('in_repartidor')
-        const tamanyo = document.getElementById('in_tamanyo')
         const btn_caja = document.getElementById('btn_anyadir_paquete')
         const registro_paquetes = document.getElementById('registro_paquetes')
         const reparto = {
@@ -161,11 +184,10 @@
             this.zona = zona;
 
         }
-        function Caja(altura, ancho, largo, tamanyo, destino, repartidor) {
+        function Caja(altura, ancho, largo, destino, repartidor) {
             this.altura = parseFloat(altura);
             this.ancho = parseFloat(ancho);
             this.largo = parseFloat(largo);
-            this.tamanyo = tamanyo;
             this.destino = destino;
             this.repartidor = repartidor;
             this.superficie = function () {
@@ -217,7 +239,6 @@
                 ancho.value === '' || ancho.value <= 0 ||
                 largo.value === '' || largo.value <= 0 ||
                 destino.value === '' ||
-                tamanyo.value === '' ||
                 select_repartidor === '') {
                 alert('Faltan datos por completar o algunos son erroneos');
                 return;
@@ -229,21 +250,50 @@
                 altura.value,
                 ancho.value,
                 largo.value,
-                tamanyo.value,
                 destino.value,
                 repartidor_seleccionado
             )
             reparto.cajas.push(nuevaCaja);
+            registroEnvio(nuevaCaja);
 
 
             altura.value = '';
             ancho.value = '';
             largo.value = '';
-            tamanyo.value = 'Tamaño';
-            select_repartidor = '';
+            select_repartidor.value = '';
 
         }
 
+        function creaID (){
+            aleatorioEntre()
+
+        }
+        function registroEnvio(caja) {
+          const cuerpo_tabla = document.getElementById('cuerpo_tabla');
+          const fila = document.createElement('tr');
+
+
+            if(caja.repartidor.zona === 'Nacional'){
+                fila.style.backgroundColor = '#e8f5e9';
+                fila.style.borderLeft = '5px solid #4caf50';
+            } else {
+                fila.style.backgroundColor = '#e3f2fd';
+                fila.style.borderLeft = '5px solid #2196f3';                
+            }
+
+            fila.innerHTML = 
+            `<td class='fw-bold>${reparto.cajas.length}</td>
+            <td class=fw-bold>${caja.destino}</td>
+            <td>${caja.altura} x ${caja.largo} x ${caja.ancho}</td>
+            <td>${superficie} cm^2</td>
+            <td>${volumen}cm^3</td>
+            <td>${caja.repartidor.zona}</td>
+            <td>${caja.repartidor.nombre}</td>
+            <td>${caja.repartidor.vehiculo}</td>
+            <td>${caja.repartidor.tlf}</td>
+            `
+            cuerpo_tabla.appendChild(fila);
+        }
 
 
 
