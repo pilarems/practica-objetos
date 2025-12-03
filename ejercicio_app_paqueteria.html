@@ -22,6 +22,9 @@
             margin-top: 8px;
 
         }
+        .table_head{
+            background-color: lightblue;
+        }
     </style>
 </head>
 
@@ -129,7 +132,7 @@
                 <div class="registro_paquetes" id="registro_paquetes">
                     <div class="table">
                         <table class="table table-hover table-bodered">
-                            <thead class="table-dark">
+                            <thead class="table_head">
                                 <tr>
                                     <th>ID</th>
                                     <th>Destino</th>
@@ -175,6 +178,7 @@
         const reparto = {
             cajas: []
         }
+        let ID_cajas = [];
 
         //Objetos
         function Repartidor(nombre, vehiculo, tlf, zona) {
@@ -185,6 +189,7 @@
 
         }
         function Caja(altura, ancho, largo, destino, repartidor) {
+            this.ID = creaID();
             this.altura = parseFloat(altura);
             this.ancho = parseFloat(ancho);
             this.largo = parseFloat(largo);
@@ -219,6 +224,7 @@
             tlf.value = '';
             vehiculo.value = '';
             zona.value = 'Zona';
+
             actualizaSelect();
 
         }
@@ -226,9 +232,9 @@
         function actualizaSelect() {
             select_repartidor.innerHTML = '<option value = "">Repartidor</option>'
 
-            repartidores.forEach(function (repartidor, indice) {
+            repartidores.forEach(function (repartidor, index) {
                 const option = document.createElement('option');
-                option.value = indice;
+                option.value = index;
                 option.textContent = `${repartidor.nombre}`;
                 select_repartidor.appendChild(option);
             })
@@ -239,7 +245,7 @@
                 ancho.value === '' || ancho.value <= 0 ||
                 largo.value === '' || largo.value <= 0 ||
                 destino.value === '' ||
-                select_repartidor === '') {
+                select_repartidor.value === '') {
                 alert('Faltan datos por completar o algunos son erroneos');
                 return;
             }
@@ -265,12 +271,19 @@
         }
 
         function creaID (){
-            aleatorioEntre()
+            let nuevo_ID;
+            do {
+            nuevo_ID = aleatorioEntre(1, 10000);
+            } while (ID_cajas.includes(nuevo_ID));
+                ID_cajas.push(nuevo_ID);
+                return nuevo_ID;
+            }
 
-        }
         function registroEnvio(caja) {
           const cuerpo_tabla = document.getElementById('cuerpo_tabla');
           const fila = document.createElement('tr');
+          const superficie = caja.superficie().toFixed(2);
+          const volumen = caja.volumen().toFixed(2);
 
 
             if(caja.repartidor.zona === 'Nacional'){
@@ -282,11 +295,11 @@
             }
 
             fila.innerHTML = 
-            `<td class='fw-bold>${reparto.cajas.length}</td>
-            <td class=fw-bold>${caja.destino}</td>
+            `<td class='fw-bold'>${caja.ID}</td>
+            <td class='fw-bold'>${caja.destino}</td>
             <td>${caja.altura} x ${caja.largo} x ${caja.ancho}</td>
-            <td>${superficie} cm^2</td>
-            <td>${volumen}cm^3</td>
+            <td>${superficie} cm²</td>
+            <td>${volumen} cm³</td>
             <td>${caja.repartidor.zona}</td>
             <td>${caja.repartidor.nombre}</td>
             <td>${caja.repartidor.vehiculo}</td>
