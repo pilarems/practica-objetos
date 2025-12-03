@@ -154,6 +154,12 @@
                 </div>
             </div>
         </section>
+        <section id="dibujo">
+            <h4>Visual orientativa de las Cajas</h4>
+            <div class="contenedor_dibujos">
+
+            </div>
+        </section>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
@@ -261,11 +267,13 @@
             )
             reparto.cajas.push(nuevaCaja);
             registroEnvio(nuevaCaja);
+            draw(altura.value, largo.value, ancho.value, nuevaCaja.ID);
 
 
             altura.value = '';
             ancho.value = '';
             largo.value = '';
+            destino.value = '';
             select_repartidor.value = '';
 
         }
@@ -307,6 +315,55 @@
             `
             cuerpo_tabla.appendChild(fila);
         }
+
+        function draw(altura, largo, ancho) {
+            const contenedor_dibujos = document.querySelector('.contenedor_dibujos')
+            //Crear Canvas
+            const canvas = document.createElement("canvas");
+            canvas.width = 200;
+            canvas.height = 200;
+            const ctx = canvas.getContext("2d");
+
+            // Ajustar escala profundidad
+            largo = largo / 3;
+            
+
+            // Limpia
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            //Dibujo
+            //color y opacidad
+            ctx.fillStyle = 'darkgoldenrod';
+            ctx.globalAlpha = 0.6;
+            //lineas de contorno
+            ctx.moveTo(0, 0)
+            ctx.lineTo(largo, largo)
+            ctx.lineTo(ancho + largo, largo)
+            ctx.lineTo(ancho, 0)
+            ctx.lineTo(0, 0)
+            ctx.lineTo(0, alto)
+            ctx.lineTo(largo, largo + alto)
+            ctx.lineTo(ancho + largo, largo + alto)
+            ctx.lineTo(ancho + largo, largo)
+            ctx.lineWidth = 2;
+            ctx.stroke()
+            //relleno de contorno
+            ctx.fill()
+            //rectángulo trasero
+            ctx.fillRect(0, 0, ancho, alto);
+            //desplazar el rectángulo
+            ctx.translate(largo, largo);
+            //rectángulo desplazdo
+            ctx.fillRect(0, 0, ancho, alto);
+
+            
+
+            contenedor_dibujos.appendChild(canvas);
+
+
+            document.getElementById('dibujo').appendChild(contenedor_dibujos);
+        }
+        
 
 
 
