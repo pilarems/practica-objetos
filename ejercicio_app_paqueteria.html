@@ -25,6 +25,7 @@
 
         .contenedor_caja {
             flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
             padding: 20px;
             background-color: rgba(197, 226, 235, 0.606);
@@ -38,8 +39,7 @@
             border: 8px;
             text-align: center;
             width: 250px;
-            border-left: 3px solid rgb(93, 169, 223);
-            background-color: #c0c7ce;
+            background-color: rgb(93, 169, 223);
             border: 1px solid #dee2e6
         }
 
@@ -50,8 +50,7 @@
             border: 8px;
             text-align: center;
             width: 250px;
-            border-left: 3px solid rgb(77, 170, 74);
-            background-color: #c0c7ce;
+            background-color: rgb(77, 170, 74);
             border: 1px solid #dee2e6
         }
         .titulo_caja{
@@ -67,6 +66,7 @@
         .texto_caja{
             text-align: left;
             font-size: 12px;
+            background-color: rgba(127, 240, 255, 0.295);
         }
 
     </style>
@@ -109,9 +109,20 @@
                                             <input type="text" id="in_destino" class="form-control mb-2">
                                             <label for="in_destino">Destino</label>
                                         </div>
+
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" id="in_tipo_envio"
+                                                aria-label="Tipo de envío"
+                                                onchange="filtroRepartidores()">
+                                                <option selected>Tipo de Envío</option>
+                                                <option value="N">Nacional</option>
+                                                <option value="I">Internacional</option>
+                                            </select>
+                                            <label for="in_tipo_envio">Selecciona Nacional/Internacional</label>
+                                        </div>
                                         <div class="form-floating mb-3">
                                             <select class="form-select" id="in_repartidor"
-                                                aria-label="Default select example">
+                                                aria-label="Default select">
                                                 <option selected>Repartidor</option>
                                             </select>
                                             <label for="in_repartidor">Selecciona Repartidor</label>
@@ -131,7 +142,7 @@
                         <h1 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                + Nuevo Repatidor
+                                ➕ Nuevo Repatidor
                             </button>
                         </h1>
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion_repartidor">
@@ -156,8 +167,8 @@
                                         <select class="form-select mb-2" id="in_zona"
                                             aria-label="Default select example">
                                             <option selected>Zona</option>
-                                            <option value="Nacional">Nacional</option>
-                                            <option value="Internacional">Internacional</option>
+                                            <option value="N">Nacional</option>
+                                            <option value="I">Internacional</option>
                                         </select>
                                         <label for="in_zona">Zona</label>
                                     </div>
@@ -197,6 +208,7 @@
         const ancho = document.getElementById('in_ancho')
         const largo = document.getElementById('in_largo')
         const destino = document.getElementById('in_destino')
+        const envio = document.getElementById('in_tipo_envio');
         const select_repartidor = document.getElementById('in_repartidor')
         const btn_caja = document.getElementById('btn_anyadir_paquete')
         const registro_paquetes = document.getElementById('registro_paquetes')
@@ -204,6 +216,11 @@
             cajas: []
         }
         let ID_cajas = [];
+
+        //LOCAL STORAGE
+        const almacenamiento_repart = 'repartidores';
+        const almacenamiento_cajas = 'cajas';
+        const almacenamiento_IDS = 'ID_cajas';
 
         //Objetos
         function Repartidor(nombre, vehiculo, tlf, zona) {
@@ -230,7 +247,7 @@
 
         function creaRepartidor() {
             if (nombre.value === '' ||
-                tlf.value === '' || tlf.value.length < 9 ||
+                tlf.value === '' || tlf.value.length < 9 || tlf.value.length > 12 ||
                 vehiculo.value === '' || vehiculo.value.length < 6 ||
                 zona.value === 'Zona') {
                 alert('Faltan datos por completar o algunos son erroneos');
@@ -244,6 +261,7 @@
                 zona.value
             );
             repartidores.push(nuevoRepartidor);
+            guardaRepartidores();
 
             nombre.value = '';
             tlf.value = '';
@@ -252,6 +270,26 @@
 
             actualizaSelect();
 
+        }
+        function filtroRepartidores(){
+            const tipo_envio = envio.value;
+            select_repartidor.innerHTML = '<option value="">Repartidor</option>';
+            
+            let repartidores_filtrados;
+              if(tipo_envio === '' || tipo_envio === 'Tipo de Envío' ) {
+                 repartidores_filtrados = repartidores;
+              } else {
+               repartidores_filtrados = repartidores.filter(repartidor => 
+               repartidor.zona === tipo_envio
+              );
+              }
+              repartidores_filtrados.forEach(repartidor =>{
+                const option = document.createElement('option');
+                const indice = repartidores.indexOf(repartidor);
+                option.value = indice;
+                option.textContent = repartidor.nombre;
+                select_repartidor.append(option);
+              })
         }
 
         function actualizaSelect() {
@@ -316,7 +354,7 @@
              contenedor.style.display = 'flex';
 
             const info_caja = document.createElement('div');
-            info_caja.className = caja.repartidor.zona === 'Nacional' ? 'info_caja-nacional' : 'info_caja-internacional';
+            info_caja.className = caja.repartidor.zona === 'N' ? 'info_caja-nacional' : 'info_caja-internacional';
 
             const titulo_caja = document.createElement('h5');
             titulo_caja.className = 'titulo_caja';
@@ -324,7 +362,11 @@
             
             const contenedor_canvas = document.createElement('div');
             contenedor_canvas.className = 'contenedor_canvas';
-            draw(caja.altura, caja.largo, caja.ancho, caja.ID, contenedor_canvas);
+            contenedor_canvas.style.border = '3px solid "darkblue"';
+            contenedor_canvas.style.borderRadius = '10px';
+            let dibujo = draw(); 
+            dibujo.style.transform = ''
+            
 
             const texto_caja = document.createElement('div');
             texto_caja.className = 'texto_caja';
@@ -349,9 +391,10 @@
             const canvas = document.createElement("canvas");
             canvas.width = 200;
             canvas.height = 200;
-            canvas.style.border = '1px solid #ccc';
-            canvas.style.borderRadius = '5px';
+           
             const ctx = canvas.getContext("2d");
+
+
 
             // Ajustar escala profundidad
             largo = largo / 3;
@@ -387,14 +430,35 @@
 
 
 
-            contenedorCanvas.append(canvas);
+            return canvas;
 
         }
 
+        function guardaRepartidores() {
+            localStorage.setItem(almacenamiento_repart, JSON.stringify(repartidores));
+            console.log('Los repartidores estan a salvo!!!', repartidores)
+        }
 
+        function cargarRepartidores() {
+            const repartidores_guardados = localStorage.getItem(almacenamiento_repart);
+            if (repartidores_guardados) {
+                const repart_resplado = JSON.parse(repartidores_guardados);
+                repartidores.length = 0;
 
+                repart_resplado.forEach(repartidorData => {
+                    repartidores.push(new Repartidor(
+                    repartidorData.nombre,
+                    repartidorData.vehiculo,
+                    repartidorData.tlf,
+                    repartidorData.zona
+                    ));
+                });
+                console.log('Ya tienes a tus repartidorcitos', repartidores);
+                actualizaSelect();
+            }
+        }
 
-
+        cargarRepartidores();
         btn_repartidor.onclick = creaRepartidor;
         btn_caja.onclick = creaCaja;
 
