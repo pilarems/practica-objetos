@@ -40,18 +40,19 @@
             text-align: center;
             width: 250px;
             background-color: rgb(93, 169, 223);
-            border: 1px solid #dee2e6
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
         }
 
         .info_caja-internacional {
             display: inline-block;
             margin: 15px;
             padding: 15px;
-            border: 8px;
             text-align: center;
             width: 250px;
             background-color: rgb(77, 170, 74);
-            border: 1px solid #dee2e6
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
         }
         .titulo_caja{
             text-align: center;
@@ -355,6 +356,7 @@
 
             const info_caja = document.createElement('div');
             info_caja.className = caja.repartidor.zona === 'N' ? 'info_caja-nacional' : 'info_caja-internacional';
+            
 
             const titulo_caja = document.createElement('h5');
             titulo_caja.className = 'titulo_caja';
@@ -364,8 +366,8 @@
             contenedor_canvas.className = 'contenedor_canvas';
             contenedor_canvas.style.border = '3px solid "darkblue"';
             contenedor_canvas.style.borderRadius = '10px';
-            let dibujo = draw(); 
-            dibujo.style.transform = ''
+            let dibujo = draw(caja.altura, caja.largo, caja.ancho, caja.ID); 
+            dibujo.style.position = 'relative ';
             
 
             const texto_caja = document.createElement('div');
