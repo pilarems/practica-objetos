@@ -22,9 +22,53 @@
             margin-top: 8px;
 
         }
-        .table_head{
-            background-color: lightblue;
+
+        .contenedor_caja {
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            background-color: rgba(197, 226, 235, 0.606);
+            display: none;
         }
+
+        .info_caja-nacional {
+            display: inline-block;
+            margin: 15px;
+            padding: 15px;
+            border: 8px;
+            text-align: center;
+            width: 250px;
+            border-left: 3px solid rgb(93, 169, 223);
+            background-color: #c0c7ce;
+            border: 1px solid #dee2e6
+        }
+
+        .info_caja-internacional {
+            display: inline-block;
+            margin: 15px;
+            padding: 15px;
+            border: 8px;
+            text-align: center;
+            width: 250px;
+            border-left: 3px solid rgb(77, 170, 74);
+            background-color: #c0c7ce;
+            border: 1px solid #dee2e6
+        }
+        .titulo_caja{
+            text-align: center;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin: 1px 5px;
+            font-weight: bold;
+        }
+        .contenedor_canvas{
+            margin-bottom: 10px;
+        }
+        .texto_caja{
+            text-align: left;
+            font-size: 12px;
+        }
+
     </style>
 </head>
 
@@ -40,7 +84,7 @@
                                 + Nuevo paquete
                             </button>
                         </h1>
-                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordion_paquete">
                             <div class="accordion-body">
                                 <form class="p-2 rounded" id="form_paquete">
                                     <div class="form-floating mb-3">
@@ -90,7 +134,7 @@
                                 + Nuevo Repatidor
                             </button>
                         </h1>
-                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion">
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion_repartidor">
                             <div class="accordion-body">
                                 <form class="p-2 rounded" id="form_repartidor">
                                     <div class="form-floating mb-3">
@@ -127,36 +171,11 @@
             </div>
         </section>
         <section class="row">
-            <div class="paquetes">
+            <div class="paquetes" id="registro_paquetes">
                 <h2>Registro de envíos</h2>
-                <div class="registro_paquetes" id="registro_paquetes">
-                    <div class="table">
-                        <table class="table table-hover table-bodered">
-                            <thead class="table_head">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Destino</th>
-                                    <th>Tamaño</th>
-                                    <th>Superficie</th>
-                                    <th>Volumen</th>
-                                    <th>Tipo de Envío</th>
-                                    <th>Repartidor</th>
-                                    <th>Vehículo</th>
-                                    <th>Contacto</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cuerpo_tabla">
-                            
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="contenedor_caja" id="contenedor_caja">
 
                 </div>
-            </div>
-        </section>
-        <section id="dibujo">
-            <h4>Visual orientativa de las Cajas</h4>
-            <div class="contenedor_dibujos">
 
             </div>
         </section>
@@ -164,7 +183,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
         crossorigin="anonymous"></script>
-        <script src="/Prácticas/practica-objetos/biblioteca.js"></script>
+    <script src="/Prácticas/practica-objetos/biblioteca.js"></script>
     <script>
         //Repartidores
         const nombre = document.getElementById('in_nombre')
@@ -204,7 +223,7 @@
             this.superficie = function () {
                 return this.ancho * this.largo
             }
-            this.volumen = function (alto) {
+            this.volumen = function () {
                 return this.superficie() * this.altura;
             }
         }
@@ -267,7 +286,6 @@
             )
             reparto.cajas.push(nuevaCaja);
             registroEnvio(nuevaCaja);
-            draw(altura.value, largo.value, ancho.value, nuevaCaja.ID);
 
 
             altura.value = '';
@@ -276,57 +294,68 @@
             destino.value = '';
             select_repartidor.value = '';
 
+            console.log('Tiene quien lo reparta', repartidor_seleccionado);
         }
+        console.log('Cajita Creada');
 
-        function creaID (){
+        function creaID() {
             let nuevo_ID;
             do {
-            nuevo_ID = aleatorioEntre(1, 10000);
+                nuevo_ID = aleatorioEntre(1, 10000);
             } while (ID_cajas.includes(nuevo_ID));
-                ID_cajas.push(nuevo_ID);
-                return nuevo_ID;
-            }
-
-        function registroEnvio(caja) {
-          const cuerpo_tabla = document.getElementById('cuerpo_tabla');
-          const fila = document.createElement('tr');
-          const superficie = caja.superficie().toFixed(2);
-          const volumen = caja.volumen().toFixed(2);
-
-
-            if(caja.repartidor.zona === 'Nacional'){
-                fila.style.backgroundColor = '#e8f5e9';
-                fila.style.borderLeft = '5px solid #4caf50';
-            } else {
-                fila.style.backgroundColor = '#e3f2fd';
-                fila.style.borderLeft = '5px solid #2196f3';                
-            }
-
-            fila.innerHTML = 
-            `<td class='fw-bold'>${caja.ID}</td>
-            <td class='fw-bold'>${caja.destino}</td>
-            <td>${caja.altura} x ${caja.largo} x ${caja.ancho}</td>
-            <td>${superficie} cm²</td>
-            <td>${volumen} cm³</td>
-            <td>${caja.repartidor.zona}</td>
-            <td>${caja.repartidor.nombre}</td>
-            <td>${caja.repartidor.vehiculo}</td>
-            <td>${caja.repartidor.tlf}</td>
-            `
-            cuerpo_tabla.appendChild(fila);
+            ID_cajas.push(nuevo_ID);
+            return nuevo_ID;
         }
 
-        function draw(altura, largo, ancho) {
-            const contenedor_dibujos = document.querySelector('.contenedor_dibujos')
+        function registroEnvio(caja) {
+            console.log('por que no se ven mis paquetitos?', caja)
+            const contenedor = document.getElementById('contenedor_caja');
+            console.log('a ver si el contenedor no va existir...', contenedor)
+            
+
+             contenedor.style.display = 'flex';
+
+            const info_caja = document.createElement('div');
+            info_caja.className = caja.repartidor.zona === 'Nacional' ? 'info_caja-nacional' : 'info_caja-internacional';
+
+            const titulo_caja = document.createElement('h5');
+            titulo_caja.className = 'titulo_caja';
+            titulo_caja.textContent = `${caja.ID}`;
+            
+            const contenedor_canvas = document.createElement('div');
+            contenedor_canvas.className = 'contenedor_canvas';
+            draw(caja.altura, caja.largo, caja.ancho, caja.ID, contenedor_canvas);
+
+            const texto_caja = document.createElement('div');
+            texto_caja.className = 'texto_caja';
+            texto_caja.innerHTML = `
+            <p><strong>Destino:</strong> ${caja.destino}</p>
+            <p><strong>Medidas:</strong> ${caja.altura} cm x ${caja.largo} cm x ${caja.ancho} cm</p>
+            <p><strong>Superficie:</strong> ${caja.superficie().toFixed(2)} cm² </p>
+            <p><strong>Volumen:</strong> ${caja.volumen().toFixed(2)} cm³ </p>
+            <p><strong>Repartidor:</strong> ${caja.repartidor.nombre}</p>
+            <p><strong>Contácto:</strong> ${caja.repartidor.tlf}</p>
+            <p><strong>Matrícula del vehículo:</strong> ${caja.repartidor.vehiculo}</p>
+            `
+            info_caja.append(titulo_caja, contenedor_canvas, texto_caja);
+            contenedor.append(info_caja);
+
+            
+
+        }
+
+        function draw(altura, largo, ancho, idCaja, contenedorCanvas) {
             //Crear Canvas
             const canvas = document.createElement("canvas");
             canvas.width = 200;
             canvas.height = 200;
+            canvas.style.border = '1px solid #ccc';
+            canvas.style.borderRadius = '5px';
             const ctx = canvas.getContext("2d");
 
             // Ajustar escala profundidad
             largo = largo / 3;
-            
+
 
             // Limpia
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -341,29 +370,27 @@
             ctx.lineTo(ancho + largo, largo)
             ctx.lineTo(ancho, 0)
             ctx.lineTo(0, 0)
-            ctx.lineTo(0, alto)
-            ctx.lineTo(largo, largo + alto)
-            ctx.lineTo(ancho + largo, largo + alto)
+            ctx.lineTo(0, altura)
+            ctx.lineTo(largo, largo + altura)
+            ctx.lineTo(ancho + largo, largo + altura)
             ctx.lineTo(ancho + largo, largo)
             ctx.lineWidth = 2;
             ctx.stroke()
             //relleno de contorno
             ctx.fill()
             //rectángulo trasero
-            ctx.fillRect(0, 0, ancho, alto);
+            ctx.fillRect(0, 0, ancho, altura);
             //desplazar el rectángulo
             ctx.translate(largo, largo);
             //rectángulo desplazdo
-            ctx.fillRect(0, 0, ancho, alto);
-
-            
-
-            contenedor_dibujos.appendChild(canvas);
+            ctx.fillRect(0, 0, ancho, altura);
 
 
-            document.getElementById('dibujo').appendChild(contenedor_dibujos);
+
+            contenedorCanvas.append(canvas);
+
         }
-        
+
 
 
 
