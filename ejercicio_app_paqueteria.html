@@ -13,8 +13,8 @@
         .btn {
             background-color: aliceblue;
             border-radius: 10px;
-            border-color: blue;
-            color: blue;
+            border-color: rgb(46, 160, 253);
+            color: rgb(25, 25, 133);
         }
 
         .paquetes {
@@ -28,7 +28,7 @@
             justify-content: center;
             gap: 20px;
             padding: 20px;
-            background-color: rgba(197, 226, 235, 0.606);
+            background-color: rgba(175, 222, 236, 0.606);
             display: none;
         }
 
@@ -39,7 +39,7 @@
             border: 8px;
             text-align: center;
             width: 250px;
-            background-color: rgb(93, 169, 223);
+            background-color: rgb(129, 184, 223);
             border: 1px solid #dee2e6;
             border-radius: 10px;
         }
@@ -50,26 +50,31 @@
             padding: 15px;
             text-align: center;
             width: 250px;
-            background-color: rgb(77, 170, 74);
+            background-color: rgb(128, 199, 126);
             border: 1px solid #dee2e6;
             border-radius: 10px;
         }
-        .titulo_caja{
+
+        .titulo_caja {
             text-align: center;
             color: #2c3e50;
             font-size: 1.5rem;
             margin: 1px 5px;
             font-weight: bold;
         }
-        .contenedor_canvas{
+
+        .contenedor_canvas {
             margin-bottom: 10px;
         }
-        .texto_caja{
+
+        .texto_caja {
             text-align: left;
             font-size: 12px;
             background-color: rgba(127, 240, 255, 0.295);
+            border: 2px solid rgb(255, 255, 255);
+            border-radius: 10px;
+            padding: 4px;
         }
-
     </style>
 </head>
 
@@ -82,7 +87,7 @@
                         <h1 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                + Nuevo paquete
+                                ⊹ Nuevo paquete
                             </button>
                         </h1>
                         <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordion_paquete">
@@ -112,8 +117,7 @@
                                         </div>
 
                                         <div class="form-floating mb-3">
-                                            <select class="form-select" id="in_tipo_envio"
-                                                aria-label="Tipo de envío"
+                                            <select class="form-select" id="in_tipo_envio" aria-label="Tipo de envío"
                                                 onchange="filtroRepartidores()">
                                                 <option selected>Tipo de Envío</option>
                                                 <option value="N">Nacional</option>
@@ -122,13 +126,12 @@
                                             <label for="in_tipo_envio">Selecciona Nacional/Internacional</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <select class="form-select" id="in_repartidor"
-                                                aria-label="Default select">
+                                            <select class="form-select" id="in_repartidor" aria-label="Default select">
                                                 <option selected>Repartidor</option>
                                             </select>
                                             <label for="in_repartidor">Selecciona Repartidor</label>
                                         </div>
-                                        <button type="button" class="btn mt-2" id="btn_anyadir_paquete">Añadir
+                                        <button type="button" class="btn mt-2" id="btn_add_paquete">✓ Añadir
                                             paquete</button>
                                     </div>
                                 </form>
@@ -143,10 +146,11 @@
                         <h1 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                                ➕ Nuevo Repatidor
+                                ⊹ Nuevo Repatidor
                             </button>
                         </h1>
-                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordion_repartidor">
+                        <div id="collapseTwo" class="accordion-collapse collapse"
+                            data-bs-parent="#accordion_repartidor">
                             <div class="accordion-body">
                                 <form class="p-2 rounded" id="form_repartidor">
                                     <div class="form-floating mb-3">
@@ -173,7 +177,7 @@
                                         </select>
                                         <label for="in_zona">Zona</label>
                                     </div>
-                                    <button type="button" class="btn" id="btn_anyadir_repartidor">Añadir
+                                    <button type="button" class="btn" id="btn_add_repartidor">✓ Añadir
                                         repartidor</button>
                             </div>
                             </form>
@@ -202,7 +206,7 @@
         const vehiculo = document.getElementById('in_vehiculo')
         const tlf = document.getElementById('in_tlf')
         const zona = document.getElementById('in_zona')
-        const btn_repartidor = document.getElementById('btn_anyadir_repartidor')
+        const btn_repartidor = document.getElementById('btn_add_repartidor')
         const repartidores = []
         //Paquetes
         const altura = document.getElementById('in_altura')
@@ -211,7 +215,7 @@
         const destino = document.getElementById('in_destino')
         const envio = document.getElementById('in_tipo_envio');
         const select_repartidor = document.getElementById('in_repartidor')
-        const btn_caja = document.getElementById('btn_anyadir_paquete')
+        const btn_caja = document.getElementById('btn_add_paquete')
         const registro_paquetes = document.getElementById('registro_paquetes')
         const reparto = {
             cajas: []
@@ -272,25 +276,25 @@
             actualizaSelect();
 
         }
-        function filtroRepartidores(){
+        function filtroRepartidores() {
             const tipo_envio = envio.value;
             select_repartidor.innerHTML = '<option value="">Repartidor</option>';
-            
+
             let repartidores_filtrados;
-              if(tipo_envio === '' || tipo_envio === 'Tipo de Envío' ) {
-                 repartidores_filtrados = repartidores;
-              } else {
-               repartidores_filtrados = repartidores.filter(repartidor => 
-               repartidor.zona === tipo_envio
-              );
-              }
-              repartidores_filtrados.forEach(repartidor =>{
+            if (tipo_envio === '' || tipo_envio === 'Tipo de Envío') {
+                repartidores_filtrados = repartidores;
+            } else {
+                repartidores_filtrados = repartidores.filter(repartidor =>
+                    repartidor.zona === tipo_envio
+                );
+            }
+            repartidores_filtrados.forEach(repartidor => {
                 const option = document.createElement('option');
                 const indice = repartidores.indexOf(repartidor);
                 option.value = indice;
                 option.textContent = repartidor.nombre;
                 select_repartidor.append(option);
-              })
+            })
         }
 
         function actualizaSelect() {
@@ -347,28 +351,37 @@
         }
 
         function registroEnvio(caja) {
-            console.log('por que no se ven mis paquetitos?', caja)
-            const contenedor = document.getElementById('contenedor_caja');
-            console.log('a ver si el contenedor no va existir...', contenedor)
-            
 
-             contenedor.style.display = 'flex';
+            const contenedor = document.getElementById('contenedor_caja');
+
+
+            contenedor.style.display = 'flex';
 
             const info_caja = document.createElement('div');
             info_caja.className = caja.repartidor.zona === 'N' ? 'info_caja-nacional' : 'info_caja-internacional';
-            
+
 
             const titulo_caja = document.createElement('h5');
             titulo_caja.className = 'titulo_caja';
             titulo_caja.textContent = `${caja.ID}`;
-            
+
             const contenedor_canvas = document.createElement('div');
             contenedor_canvas.className = 'contenedor_canvas';
             contenedor_canvas.style.border = '3px solid "darkblue"';
             contenedor_canvas.style.borderRadius = '10px';
-            let dibujo = draw(caja.altura, caja.largo, caja.ancho, caja.ID); 
+            contenedor_canvas.style.position = 'relative';
+            contenedor_canvas.style.overflow = 'hidden';
+            let dibujo = draw(caja.altura, caja.largo, caja.ancho, caja.ID);
             dibujo.style.position = 'relative ';
-            
+            const ancho_total = caja.ancho + caja.largo / 3;
+            const altura_total = caja.altura + caja.largo / 3;
+            const desplazamiento_x = (200 - ancho_total) / 2;
+            const desplazamiento_Y = (200 - altura_total) / 2;
+
+            dibujo.style.left = `${desplazamiento_x}px`;
+            dibujo.style.top = `${desplazamiento_Y}px`;
+
+
 
             const texto_caja = document.createElement('div');
             texto_caja.className = 'texto_caja';
@@ -381,19 +394,24 @@
             <p><strong>Contácto:</strong> ${caja.repartidor.tlf}</p>
             <p><strong>Matrícula del vehículo:</strong> ${caja.repartidor.vehiculo}</p>
             `
+            const contenedor_btns = document.createElement('div');
+            contenedor_btns.className = 'mt-3 text-center'
+            contenedor_btns.innerHTML = `
+            <button class="btn btn-warning-subtle m-1" onclick="editarCaja(${indiceActual})"> Editar</button>
+            <button class="btn btn-danger-subtle m-1" onclick="eliminarCaja(${indiceActual})"> Eliminar</button>`;
+
+            contenedor_canvas.append(dibujo)
             info_caja.append(titulo_caja, contenedor_canvas, texto_caja);
             contenedor.append(info_caja);
-
-            
-
         }
+
 
         function draw(altura, largo, ancho, idCaja, contenedorCanvas) {
             //Crear Canvas
             const canvas = document.createElement("canvas");
             canvas.width = 200;
             canvas.height = 200;
-           
+
             const ctx = canvas.getContext("2d");
 
 
@@ -436,6 +454,33 @@
 
         }
 
+        function editarCaja() {
+            const caja = reparto.caja[indiceCaja];
+
+            altura.value = caja.altura;
+            largo.value = caja.largo;
+            anoche.value = caja.ancho;
+            destino.value = caja.ancho;
+            envio.value = caja.repartidor.zona;
+
+            filtroRepartidores();
+
+            const repart_actual = repartidores.indexOf(caja.repartidor);
+           if(repart_actual !== -1) select_repartidor.value = repart_actual;
+
+           const btn_paquete = document.getElementById('btn_add_paquete');
+           btn_paquete.textContent = '✓ Actualizar Paquete';
+           btn_paquete.dataset.editCajaIndex = indiceCaja;
+
+           const collapseOne = document.getElementById('collapseOne');
+           if (collapseOne && !collapseOne.classList.contains('show')) {
+                new bootstrap.Collapse(collapseOne).show();
+           }
+
+           
+        }
+
+
         function guardaRepartidores() {
             localStorage.setItem(almacenamiento_repart, JSON.stringify(repartidores));
             console.log('Los repartidores estan a salvo!!!', repartidores)
@@ -449,10 +494,10 @@
 
                 repart_resplado.forEach(repartidorData => {
                     repartidores.push(new Repartidor(
-                    repartidorData.nombre,
-                    repartidorData.vehiculo,
-                    repartidorData.tlf,
-                    repartidorData.zona
+                        repartidorData.nombre,
+                        repartidorData.vehiculo,
+                        repartidorData.tlf,
+                        repartidorData.zona
                     ));
                 });
                 console.log('Ya tienes a tus repartidorcitos', repartidores);
