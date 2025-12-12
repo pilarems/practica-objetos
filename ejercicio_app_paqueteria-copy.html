@@ -195,6 +195,9 @@
 
             </div>
         </section>
+        <section class="row">
+            <div id="lista_repartidores" class="mt-3"></div>
+        </section>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
@@ -207,7 +210,7 @@
         const tlf = document.getElementById('in_tlf')
         const zona = document.getElementById('in_zona')
         const btn_repartidor = document.getElementById('btn_add_repartidor')
-        const lista_repartidores = document.getElementById('lista_repartidores');
+        const lista = document.getElementById('lista_repartidores');
         const repartidores = []
         //Paquetes
         const altura = document.getElementById('in_altura')
@@ -277,16 +280,15 @@
         }
 
         function muestraRepartidores() {
-            const lista = document.getElementById('lista_repartidores');
-            if (!listaDiv) return;
-            
-            listaDiv.innerHTML = '<h5>Repartidores Registrados</h5>';
-            
+            if (!lista) return;
+
+            lista.innerHTML = '<h5>Repartidores Registrados</h5>';
+
             if (repartidores.length === 0) {
-                listaDiv.innerHTML += '<p class="text-muted">No hay repartidores</p>';
+                lista.innerHTML += '<p class="text-muted">No hay repartidores</p>';
                 return;
             }
-            
+
             repartidores.forEach((repartidor, index) => {
                 const div = document.createElement('div');
                 div.className = 'repartidor-item';
@@ -295,77 +297,77 @@
                     <br>
                     <small>Tlf: ${repartidor.tlf} | Matrícula: ${repartidor.vehiculo}</small>
                     <div class="mt-2">
-                        <button class="btn btn-sm btn-warning" onclick="editarRepartidor(${index})">Editar</button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminaRepartidor(${index})">Eliminar</button>
+                        <button class="btn btn-sm btn-warning" onclick="editarRepartidor(${index})">✏️ Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminaRepartidor(${index})">❌ Eliminar</button>
                     </div>
                 `;
-                listaDiv.appendChild(div);
+                lista.append(div);
             });
         }
-        
 
-     function editarRepartidor(indice) {
-     const repartidor = repartidores[indice];
-    
-    nombre.value = repartidor.nombre;
-    tlf.value = repartidor.tlf;
-    vehiculo.value = repartidor.vehiculo;
-    zona.value = repartidor.zona;
-    
-    btn_repartidor.textContent = '✓ Actualizar Repartidor';
-    btn_repartidor.dataset.editIndex = indice;
-    
 
-    const collapseTwo = document.getElementById('collapseTwo');
-    if (collapseTwo && !collapseTwo.classList.contains('show')) {
-        new bootstrap.Collapse(collapseTwo).show();
-    }
-}
+        function editarRepartidor(indice) {
+            const repartidor = repartidores[indice];
 
-function actualizarRepartidor(indice) {
-    if (nombre.value === '' ||
-        tlf.value === '' || tlf.value.length < 9 || tlf.value.length > 12 ||
-        vehiculo.value === '' || vehiculo.value.length < 6 ||
-        zona.value === 'Zona') {
-        alert('Faltan datos por completar o algunos son erroneos');
-        return;
-    }
-    repartidores[indice].nombre = nombre.value;
-    repartidores[indice].tlf = tlf.value;
-    repartidores[indice].vehiculo = vehiculo.value;
-    repartidores[indice].zona = zona.value;
+            nombre.value = repartidor.nombre;
+            tlf.value = repartidor.tlf;
+            vehiculo.value = repartidor.vehiculo;
+            zona.value = repartidor.zona;
 
-     guardaRepartidores();
-    actualizaSelect();
-    muestraRepartidores();
+            btn_repartidor.textContent = '✓ Actualizar Repartidor';
+            btn_repartidor.dataset.editIndex = indice;
 
-    nombre.value = '';
-    tlf.value = '';
-    vehiculo.value = '';
-    zona.value = 'Zona';
-    
-    btn_repartidor.textContent = '✓ Añadir repartidor';
-    delete btn_repartidor.dataset.editIndex;
-    
-}
 
-function eliminaRepartidor(indice) {
-            if (confirm('¿Estás seguro? Esto afectará a los paquetes asignados.')) {
-                 const paquetesAsignados = Object.values(paquetes).filter(p => 
-            p.repartidor === repartidores[indice]
-        );
-        if (paquetesAsignados.length > 0) {
-            alert('Este repartidor tiene paquetes asignados. Reasigna los paquetes primero.');
-            return;
+            const collapseTwo = document.getElementById('collapseTwo');
+            if (collapseTwo && !collapseTwo.classList.contains('show')) {
+                new bootstrap.Collapse(collapseTwo).show();
+            }
         }
-        repartidores.splice(indice, 1);
-        guardarRepartidores();
-        actualizaSelect();
-        muestraRepartidores();
-        
-        console.log('Repartidor eliminado en índice:', indice);
-    }
-}
+
+        function actualizarRepartidor(indice) {
+            if (nombre.value === '' ||
+                tlf.value === '' || tlf.value.length < 9 || tlf.value.length > 12 ||
+                vehiculo.value === '' || vehiculo.value.length < 6 ||
+                zona.value === 'Zona') {
+                alert('Faltan datos por completar o algunos son erroneos');
+                return;
+            }
+            repartidores[indice].nombre = nombre.value;
+            repartidores[indice].tlf = tlf.value;
+            repartidores[indice].vehiculo = vehiculo.value;
+            repartidores[indice].zona = zona.value;
+
+            guardaRepartidores();
+            actualizaSelect();
+            muestraRepartidores();
+
+            nombre.value = '';
+            tlf.value = '';
+            vehiculo.value = '';
+            zona.value = 'Zona';
+
+            btn_repartidor.textContent = '✓ Añadir repartidor';
+            delete btn_repartidor.dataset.editIndex;
+
+        }
+
+        function eliminaRepartidor(indice) {
+            if (confirm('¿Estás seguro? Esto afectará a los paquetes asignados.')) {
+                const paquetesAsignados = Object.values(paquetes).filter(p =>
+                    p.repartidor === repartidores[indice]
+                );
+                if (paquetesAsignados.length > 0) {
+                    alert('Este repartidor tiene paquetes asignados. Reasigna los paquetes primero.');
+                    return;
+                }
+                repartidores.splice(indice, 1);
+                guardaRepartidores();
+                actualizaSelect();
+                muestraRepartidores();
+
+                console.log('Repartidor eliminado en índice:', indice);
+            }
+        }
 
         function filtroRepartidores() {
             const tipo_envio = envio.value;
@@ -431,7 +433,7 @@ function eliminaRepartidor(indice) {
 
             guardaPaquetes();
             muestraPaquete(nuevaCaja);
-    
+
         }
 
         function creaID() {
@@ -444,15 +446,15 @@ function eliminaRepartidor(indice) {
         }
 
 
-        function registroEnvio(caja) {
+        function muestraPaquete(caja) {
 
             const contenedor = document.getElementById('contenedor_caja');
             contenedor.style.display = 'flex';
 
             const ID_existe = document.getElementById(`caja-${caja.ID}`);
-                if ((ID_existe)) {
-                    ID_existe.remove();
-                }
+            if ((ID_existe)) {
+                ID_existe.remove();
+            }
 
             const info_caja = document.createElement('div');
             info_caja.id = `caja-${caja.ID}`;
@@ -495,11 +497,11 @@ function eliminaRepartidor(indice) {
             const contenedor_btns = document.createElement('div');
             contenedor_btns.className = 'mt-3 text-center'
             contenedor_btns.innerHTML = `
-            <button class="btn btn-warning-subtle m-1" onclick="editarCaja(${caja.ID})"> Editar</button>
-            <button class="btn btn-danger-subtle m-1" onclick="eliminarCaja(${caja.ID})"> Eliminar</button>`;
+            <button class="btn btn-warning-subtle m-1" onclick="editarCaja(${caja.ID})">✏️ Editar</button>
+            <button class="btn btn-danger-subtle m-1" onclick="eliminarCaja(${caja.ID})">❌ Eliminar</button>`;
 
             contenedor_canvas.append(dibujo)
-            info_caja.append(titulo_caja, contenedor_canvas, texto_caja);
+            info_caja.append(titulo_caja, contenedor_canvas, texto_caja, contenedor_btns);
             contenedor.append(info_caja);
         }
 
@@ -558,58 +560,58 @@ function eliminaRepartidor(indice) {
             filtroRepartidores();
 
             const repart_actual = repartidores.findIndex(repart => repart.nombre === caja.repartidor.nombre && repart.vehiculo === caja.repartidor.vehiculo);
-           if(repart_actual !== -1) select_repartidor.value = repart_actual;
+            if (repart_actual !== -1) select_repartidor.value = repart_actual;
 
-           const btn_paquete = document.getElementById('btn_add_paquete');
-           btn_paquete.textContent = '✓ Actualizar Paquete';
-           btn_paquete.dataset.editID = id;
+            const btn_paquete = document.getElementById('btn_add_paquete');
+            btn_paquete.textContent = '✓ Actualizar Paquete';
+            btn_paquete.dataset.editID = id;
 
-           const collapseOne = document.getElementById('collapseOne');
-           if (collapseOne && !collapseOne.classList.contains('show')) {
+            const collapseOne = document.getElementById('collapseOne');
+            if (collapseOne && !collapseOne.classList.contains('show')) {
                 new bootstrap.Collapse(collapseOne).show();
-           }
+            }
 
-           
+
         }
-        
+
         function actualizarCaja(id) {
             if (altura.value === '' || altura.value <= 0 ||
-        ancho.value === '' || ancho.value <= 0 ||
-        largo.value === '' || largo.value <= 0 ||
-        destino.value === '' ||
-        select_repartidor.value === '') {
-        alert('Faltan datos por completar o algunos son erroneos');
-        return;
-    }
-const indice_repartidor = parseInt(select_repartidor.value);
-    const repartidor_seleccionado = repartidores[indice_repartidor];
+                ancho.value === '' || ancho.value <= 0 ||
+                largo.value === '' || largo.value <= 0 ||
+                destino.value === '' ||
+                select_repartidor.value === '') {
+                alert('Faltan datos por completar o algunos son erroneos');
+                return;
+            }
+            const indice_repartidor = parseInt(select_repartidor.value);
+            const repartidor_seleccionado = repartidores[indice_repartidor];
 
-     const caja = paquetes[id];
-    caja.altura = parseFloat(altura.value);
-    caja.ancho = parseFloat(ancho.value);
-    caja.largo = parseFloat(largo.value);
-    caja.destino = destino.value;
-    caja.repartidor = repartidor_seleccionado;
+            const caja = paquetes[id];
+            caja.altura = parseFloat(altura.value);
+            caja.ancho = parseFloat(ancho.value);
+            caja.largo = parseFloat(largo.value);
+            caja.destino = destino.value;
+            caja.repartidor = repartidor_seleccionado;
 
-    const elemento = document.getElementById(`caja-${id}`);
-    if (elemento) {
-        elemento.remove();
-    }
-    mostrarPaquete(caja);
-    guardaPaquetes();
-    limpiaFormCaja();
-    btn_caja.textContent = '✓ Añadir paquete';
-    delete btn_caja.dataset.editID;
+            const elemento = document.getElementById(`caja-${id}`);
+            if (elemento) {
+                elemento.remove();
+            }
+            muestraPaquete(caja);
+            guardaPaquetes();
+            limpiaFormCaja();
+            btn_caja.textContent = '✓ Añadir paquete';
+            delete btn_caja.dataset.editID;
 
         }
 
         function limpiaFormCaja() {
             altura.value = '';
-    ancho.value = '';
-    largo.value = '';
-    destino.value = '';
-    envio.value = 'Tipo de Envío';
-    select_repartidor.innerHTML = '<option selected>Repartidor</option>';
+            ancho.value = '';
+            largo.value = '';
+            destino.value = '';
+            envio.value = 'Tipo de Envío';
+            select_repartidor.innerHTML = '<option selected>Repartidor</option>';
         }
 
         function eliminarCaja(id) {
@@ -630,7 +632,6 @@ const indice_repartidor = parseInt(select_repartidor.value);
 
         function guardaRepartidores() {
             localStorage.setItem(almacenamiento_repart, JSON.stringify(repartidores));
-            console.log('Los repartidores estan a salvo!!!', repartidores)
         }
 
         function cargaRepartidores() {
@@ -647,15 +648,13 @@ const indice_repartidor = parseInt(select_repartidor.value);
                         repartidorData.zona
                     ));
                 });
-                console.log('Ya tienes a tus repartidorcitos', repartidores);
-                actualizaSelect();
             }
+            actualizaSelect();
         }
 
         function guardaPaquetes() {
             localStorage.setItem(almacenamiento_cajas, JSON.stringify(paquetes));
             localStorage.setItem(almacenamiento_IDS, JSON.stringify(ID_cajas));
-            console.los('paquetes guarddos: ', paquetes);
         }
 
         function cargaPaquetes() {
@@ -692,40 +691,35 @@ const indice_repartidor = parseInt(select_repartidor.value);
             }
         }
 
-        cargarRepartidores();
-        btn_repartidor.onclick = creaRepartidor;
-        btn_caja.onclick = function() {
-            const editID = btn_caja.dataset.editID;
-            if (editID) {
-                actualizarCaja(editID)
-            } else {
-                creaCaja();
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            cargaRepartidores();
+            cargaPaquetes();
+            muestraRepartidores();
+
+            btn_repartidor.onclick = function () {
+                const editIndex = btn_repartidor.dataset.editIndex;
+                if (editIndex !== undefined) {
+                    actualizarRepartidor(editIndex);
+                } else {
+                    creaRepartidor();
+                }
+            };
+            btn_caja.onclick = function () {
+                const editID = btn_caja.dataset.editID;
+                if (editID) {
+                    actualizarCaja(editID);
+                } else {
+                    creaCaja();
+                }
+            };
+            if (Object.keys(paquetes).length > 0) {
+                document.getElementById('contenedor_caja').style.display = 'flex';
             }
-        }
-        
-  
+        });
 
 
-btn_repartidor.onclick = function() {
-    const editIndex = btn_repartidor.dataset.editIndex;
-    
-    if (editIndex !== undefined) {
-        actualizarRepartidor(editIndex);
-    } else {
-        creaRepartidor();
-    }
-};
 
-document.addEventListener('DOMContentLoaded', function() {
-    cargarRepartidores();
-    cargarPaquetes();
-if (Object.keys(paquetes).length > 0) {
-        document.getElementById('contenedor_caja').style.display = 'flex';
-    }
-});
-
-
-        
 
 
     </script>
